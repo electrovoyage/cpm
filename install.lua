@@ -15,7 +15,7 @@ shell.run("wget " .. TAR_UNARCHIVER_URL)
 print("Done!")
 
 print("Step 2a: download github.com/electrovoyage/cpm")
-local data = textutils.deserializeJSON(http.get("https://api.github.com/repos/electrovoyage/cpm/releases/latest"))
+local data = textutils.unserializeJSON(http.get("https://api.github.com/repos/electrovoyage/cpm/releases/latest"))
 local downloadURL = data.tarball_url
 shell.run("mkdir /tmp/cpm-installer")
 shell.run("cd /tmp/cpm-installer")
