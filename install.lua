@@ -3,7 +3,7 @@ TAR_UNARCHIVER_URL = "https://raw.githubusercontent.com/MCJack123/CC-Archive/ref
 print("About to install cpm: CC Package Manager. Are you sure?\nPress Y to confirm or any other key to cancel.")
 
 local event, key = os.pullEvent("key")
-if key != "y" then 
+if key ~= "y" then 
     print("Cancelled.")
     exit() 
 end
