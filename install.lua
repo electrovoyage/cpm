@@ -28,6 +28,7 @@ io.open("/cpm/aliases.json", "w"):write(textutils.serializeJSON({
 })):close()
 
 io.open("/startup/cpm_aliases.lua", "w"):write([[
+-- cpm: CC Package Manager
 local f = io.open('/cpm/aliases.json', 'r')
 local aliases = textutils.unserializeJSON(f:read())
 f:close()
