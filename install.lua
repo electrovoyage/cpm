@@ -37,4 +37,9 @@ for key, value in pairs(aliases) do
 end
 ]]):close()
 
+print("Step 4: create /cpm/sources.json")
+io.open("/cpm/sources.json", "w"):write(textutils.serializeJSON({
+    ["cpm-central"] = "https://electrovoyage.github.io/cpm-packages/index.json"
+})):close()
+
 print("Done!")
