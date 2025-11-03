@@ -16,11 +16,5 @@ print("Done!")
 
 print("Step 2a: download github.com/electrovoyage/cpm")
 local data = textutils.unserializeJSON(http.get("https://api.github.com/repos/electrovoyage/cpm/releases/latest"):readAll())
-io.open("/dump.json", "w"):write(textutils.serializeJSON(data)):close()
---[[local downloadURL = data.tarball_url
-shell.run("mkdir /tmp/cpm-installer")
-shell.run("cd /tmp/cpm-installer")
-shell.run("wget " .. downloadURL .. " downloaded.tar")
-
-print("Step 2b: unarchive download")
-shell.run("/tar -xf /tmp/cpm-installer/downloaded.tar -C /tmp/cpm-installer/unpacked1")]]
+local downloadURL = data.assets[1].url
+shell.run("wget " .. downloadURL .. " /cpm/cpm.lua")
