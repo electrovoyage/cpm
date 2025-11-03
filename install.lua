@@ -8,10 +8,11 @@ if key ~= keys.y then
     exit()
 end
 
+shell.run("mkdir /cpm")
+
 print("Installing.")
 print("Step 1: install github.com/MCJack123/CC-Archive/tar.lua")
-shell.run("cd /")
-shell.run("wget " .. TAR_UNARCHIVER_URL)
+shell.run("wget " .. TAR_UNARCHIVER_URL .. "/cpm/tar.lua")
 print("Done!")
 
 print("Step 2: download github.com/electrovoyage/cpm")
@@ -20,9 +21,10 @@ local downloadURL = data.assets[1].url
 shell.run("wget " .. downloadURL .. " /cpm/cpm.lua")
 
 print("Step 3: add cpm command alias")
-os.mkdir("/startup")
+shell.run("mkdir /startup")
 io.open("/cpm/aliases.json", "w"):write(textutils.serializeJSON({
-    ["cpm"] = "/cpm/cpm"
+    ["cpm"] = "/cpm/cpm",
+    ["tar"] = "/cpm/tar"
 })):close()
 
 io.open("/startup/cpm_aliases.lua", "w"):write([[
