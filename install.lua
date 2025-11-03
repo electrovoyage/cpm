@@ -14,7 +14,12 @@ shell.run("cd /")
 shell.run("wget " .. TAR_UNARCHIVER_URL)
 print("Done!")
 
-print("Step 2a: download github.com/electrovoyage/cpm")
+print("Step 2: download github.com/electrovoyage/cpm")
 local data = textutils.unserializeJSON(http.get("https://api.github.com/repos/electrovoyage/cpm/releases/latest"):readAll())
 local downloadURL = data.assets[1].url
 shell.run("wget " .. downloadURL .. " /cpm/cpm.lua")
+
+print("Step 3: add cpm command alias")
+shell.setAlias("cpm", "/cpm/cpm")
+
+print("Done!")
