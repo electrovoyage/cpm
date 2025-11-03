@@ -20,6 +20,16 @@ local downloadURL = data.assets[1].url
 shell.run("wget " .. downloadURL .. " /cpm/cpm.lua")
 
 print("Step 3: add cpm command alias")
-shell.setAlias("cpm", "/cpm/cpm")
+os.mkdir("/startup")
+io.open("/cpm/aliases.json", "w"):write(textutils.serializeJSON({
+    ["cpm"] = "/cpm/cpm"
+})):close()
+
+io.open("/startup/cpm_aliases.lua", "w"):write([[
+local aliases = textutils.unserializeJSON('/cpm/aliases.json')
+for key, value in pairs(aliases) do
+    shell.addAlias(key, value)
+end
+]]):close()
 
 print("Done!")
