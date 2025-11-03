@@ -28,7 +28,9 @@ io.open("/cpm/aliases.json", "w"):write(textutils.serializeJSON({
 })):close()
 
 io.open("/startup/cpm_aliases.lua", "w"):write([[
-local aliases = textutils.unserializeJSON('/cpm/aliases.json')
+local f = io.open('/cpm/aliases.json', 'r')
+local aliases = textutils.unserializeJSON(f:read())
+f:close()
 for key, value in pairs(aliases) do
     shell.addAlias(key, value)
 end
