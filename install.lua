@@ -32,7 +32,7 @@ local f = io.open('/cpm/aliases.json', 'r')
 local aliases = textutils.unserializeJSON(f:read())
 f:close()
 for key, value in pairs(aliases) do
-    shell.addAlias(key, value)
+    shell.setAlias(key, value)
 end
 ]]):close()
 
