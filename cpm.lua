@@ -73,9 +73,10 @@ end
 -- Find repository that has a certain package
 function resolve(package, package_index)
     term.write("(Resolving " .. package .. "...")
-    for index, repository in pairs(package_index) do
-        if containsKey(repository, package) then
-            return repository[package]
+    for name, source in pairs(package_index) do
+        if containsKey(source, package) then
+            print(string.format(" found in %s.)", name))
+            return source[package]
         end
     end
     return nil
@@ -84,7 +85,7 @@ end
 function readPackageIndex()
     term.write("(Reading package index...")
     local f = io.open("/cpm/package_index.json", "r")
-    local package_index = textutils.unserializeJSON(f:readAll())
+    local package_index = textutils.unserializeJSON(f:read())
     f:close()
     print(string.format(" read %d packages over %d repositories.)", level2count(package_index), count(package_index)))
     return package_index
