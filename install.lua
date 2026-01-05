@@ -20,7 +20,7 @@ local data = textutils.unserializeJSON(http.get("https://api.github.com/repos/el
 local downloadURL = data.assets[1].browser_download_url
 shell.run("wget " .. downloadURL .. " /cpm/cpm.lua")
 
-print("Step 3: add command aliases for cpm and tar")
+print("Step 3: add command aliases, create patcher script")
 shell.run("mkdir /startup")
 io.open("/cpm/aliases.json", "w"):write(textutils.serializeJSON({
     ["cpm"] = "/cpm/cpm",
@@ -38,13 +38,17 @@ end
 ]]):close()
 
 io.open("/cpm/require.lua", "w"):write([[
+-- cpm: CC Package Manager
 package.path = package.path .. ";/cpm/packages/?.lua;/cpm/packages/?/main.lua"
-return require
+print("cpm patched package.path successfully.")
 ]])
 
 print("Step 4: create /cpm/sources.json")
 io.open("/cpm/sources.json", "w"):write(textutils.serializeJSON({
     ["cpm-central"] = "https://electrovoyage.github.io/cpm-packages/index.json"
 })):close()
+
+print("Step 5: run cpm update")
+shell.run("cpm update")
 
 print("Done!")

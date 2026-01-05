@@ -26,6 +26,15 @@ function contains(t, v)
     return false
 end
 
+function containsKey(t, k)
+    for key, value in pairs(t) do
+        if k == key then
+            return true
+        end
+    end
+    return false
+end
+
 function doesIndexExist()
     return fs.exists("/cpm/package_index.json")
 end
@@ -34,10 +43,20 @@ function doesSourcefileExist()
     return fs.exists("/cpm/sources.json")
 end
 
+-- Count entries in table
 function count(t)
     local i = 0
     for index, value in pairs(t) do
         i = i + 1
+    end
+    return i
+end
+
+-- Count entries in each table inside of t
+function level2count(t)
+    local i = 0
+    for key, value in pairs(t) do
+        i = i + count(value)
     end
     return i
 end
@@ -51,9 +70,40 @@ function ifNoSourcesMakeSome()
     end
 end
 
-function doInstall(package, package_index)
+-- Find repository that has a certain package
+function resolve(package, package_index)
     term.write("(Resolving " .. package .. "...")
+    for index, repository in pairs(package_index) do
+        if containsKey(repository, package) then
+            return repository[package]
+        end
+    end
+    return nil
+end
 
+function readPackageIndex()
+    term.write("(Reading package index...")
+    local f = io.open("/cpm/package_index.json", "r")
+    local package_index = textutils.unserializeJSON(f:readAll())
+    f:close()
+    print(string.format(" read %d packages over %d repositories.)", level2count(package_index), count(package_index)))
+    return package_index
+end
+
+function doInstall(package, package_index)
+    local pkgdata = resolve(package, package_index)
+    if not pkgdata then
+        print("error: no candidates for package "..package)
+        return false
+    end
+    
+    if pkgdata.dependencies then
+        for index, dependency in pairs(pkgdata.dependencies) do
+            doInstall(dependency, package_index)
+        end
+    end
+
+    print("installed " .. package)
 end
 
 function install(packages)
@@ -62,9 +112,9 @@ function install(packages)
         return
     end
     for index, package in pairs(packages) do
-        local f = io.open("/cpm/package_index.json", "r")
-        local package_index = textutils.unserializeJSON("")
-        doInstall(package)
+        if not doInstall(package, package_index) then
+            return false
+        end
     end
 end
 
