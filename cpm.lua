@@ -42,6 +42,32 @@ function count(t)
     return i
 end
 
+function ifNoSourcesMakeSome()
+    if not doesSourcefileExist() then
+        print("ERROR: /cpm/sources.json doesn't exist! Creating blank one.")
+        io.open("/cpm/sources.json", "w"):write(textutils.serializeJSON({
+            ['cpm-central'] = 'https://electrovoyage.github.io/cpm-packages/index.json'
+        })):close()
+    end
+end
+
+function doInstall(package, package_index)
+    term.write("(Resolving " .. package .. "...")
+
+end
+
+function install(packages)
+    if not doesIndexExist() then
+        print("There is no package index in /cpm! Run 'cpm update' first.")
+        return
+    end
+    for index, package in pairs(packages) do
+        local f = io.open("/cpm/package_index.json", "r")
+        local package_index = textutils.unserializeJSON("")
+        doInstall(package)
+    end
+end
+
 --print(textutils.serialize(slice(arg, 2, #arg)))
 
 local operation = arg[1]
@@ -54,16 +80,12 @@ cpm upgrade - upgrade all installed packages
 cpm install <package> - get a new package
 cpm list <query> - list all packages matching a query
 cpm help - display this
-]])
+
+This CPM has Super Ender Dragon Powers.]])
 
 elseif contains(VALID_OPERATIONS, operation) then
     if operation == "update" then
-        if not doesSourcefileExist() then
-            print("ERROR: /cpm/sources.json doesn't exist! Creating blank one.")
-            io.open("/cpm/sources.json", "w"):write(textutils.serializeJSON({
-                ['cpm-central'] = 'https://electrovoyage.github.io/cpm-packages/index.json'
-            })):close()
-        end
+        ifNoSourcesMakeSome()
 
         term.write("(Reading sources.json...")
         local f = io.open("/cpm/sources.json", "r")
@@ -83,6 +105,8 @@ elseif contains(VALID_OPERATIONS, operation) then
 
         io.open("/cpm/package_index.json", "w"):write(textutils.serializeJSON(newindex)):close()
         print("Read " .. packagestotal .. " packages.")
+    elseif operation == "install" then
+        install(slice(arg, 2, #arg))
     end
 else
     print("invalid operation " .. operation .. " (run 'cpm help' for help)")

@@ -27,7 +27,7 @@ io.open("/cpm/aliases.json", "w"):write(textutils.serializeJSON({
     ["tar"] = "/cpm/tar"
 })):close()
 
-io.open("/startup/cpm_aliases.lua", "w"):write([[
+io.open("/startup/cpm_startup.lua", "w"):write([[
 -- cpm: CC Package Manager
 local f = io.open('/cpm/aliases.json', 'r')
 local aliases = textutils.unserializeJSON(f:read())
@@ -36,6 +36,11 @@ for key, value in pairs(aliases) do
     shell.setAlias(key, value)
 end
 ]]):close()
+
+io.open("/cpm/require.lua", "w"):write([[
+package.path = package.path .. ";/cpm/packages/?.lua;/cpm/packages/?/main.lua"
+return require
+]])
 
 print("Step 4: create /cpm/sources.json")
 io.open("/cpm/sources.json", "w"):write(textutils.serializeJSON({
