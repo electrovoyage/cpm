@@ -13,7 +13,7 @@ HANDLERS = {
         local tarball = http.get(releasedata.tarball_url):readAll()
         shell.run("mkdir /tmp")
         io.open(string.format("/tmp/%d.tar", releasedata.id), 'w'):write(tarball):close()
-        shell.run(string.format('tar -xf /tpm/%d.tar -C /cpm/%s', releasedata.id, package))
+        shell.run(string.format('tar -xf /tpm/%d.tar -C /cpm/packages/%s', releasedata.id, package))
         shell.run(string.format("rm /tmp/%d.tar", releasedata.id))
     end
 }
