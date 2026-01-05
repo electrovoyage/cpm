@@ -7,6 +7,17 @@ VALID_OPERATIONS = {
     "list"
 }
 
+HANDLERS = {
+    ["github"] = function(package, data)
+        local releasedata = textutils.unserializeJSON(http.get(data.url):readAll())
+        local tarball = http.get(releasedata.tarball_url):readAll()
+        shell.run("mkdir /tmp")
+        io.open(string.format("/tmp/%d.tar", releasedata.id), 'r'):write(tarball):close()
+        shell.run(string.format('tar -xf /tpm/%d.tar -C /cpm/%s', releasedata.id, package))
+        shell.run(string.format("rm /tmp/%d.tar", releasedata.id))
+    end
+}
+
 function slice(t, start, end_)
     local t2 = {}
     for index, value in pairs(t) do
@@ -104,6 +115,9 @@ function doInstall(package, package_index)
         end
     end
 
+    print('installing ' .. package)
+    shell.run("mkdir /cpm/packages/" .. package)
+    HANDLERS[pkgdata.handler](package, pkgdata)
     print("installed " .. package)
 end
 
