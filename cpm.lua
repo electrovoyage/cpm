@@ -112,7 +112,7 @@ function install(packages)
         return
     end
     for index, package in pairs(packages) do
-        if not doInstall(package, package_index) then
+        if not doInstall(package, readPackageIndex()) then
             return false
         end
     end
